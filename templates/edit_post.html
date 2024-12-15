@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post</title>
+</head>
+
+<body>
+    <h1>Edit Post: {{ post.title }}</h1>
+    <form id="editPostForm" action="/posts/{{ post.id }}" method="POST">
+        <!-- Прячем реальный метод PUT с помощью JavaScript -->
+        <input type="hidden" name="_method" value="PUT">
+
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" required>{{ post.content }}</textarea><br><br>
+
+        <button type="submit">Update Post</button>
+    </form>
+    <a href="/posts/">Back to Posts List</a>
+
+    <script>
+        // Используем JavaScript для изменения метода на PUT
+        document.getElementById('editPostForm').onsubmit = function (event) {
+            event.preventDefault();  // Отменить стандартную отправку формы
+
+            const form = event.target;
+            const method = form.querySelector('input[name="_method"]').value;
+            const action = form.action;
+
+            fetch(action, {
+                method: method, // Используем PUT, заданный в скрытом поле
+                body: new FormData(form),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Post updated successfully!');
+                    window.location.href = '/posts/';
+                })
+                .catch(error => {
+                    alert('Error updating post');
+                });
+        };
+    </script>
+</body>
+
+</html>

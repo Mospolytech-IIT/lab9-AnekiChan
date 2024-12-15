@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Post</title>
+</head>
+
+<body>
+    <h1>Edit Post: {{ post.title }}</h1>
+    <form id="editPostForm" action="/posts/{{ post.id }}" method="POST">
+        <label for="content">Content:</label>
+        <textarea id="content" name="content" required>{{ post.content }}</textarea><br><br>
+
+        <button type="submit">Update Post</button>
+    </form>
+
+    <script>
+        // Ожидаем отправки формы
+        document.getElementById('editPostForm').onsubmit = function (event) {
+            event.preventDefault();  // Предотвращаем стандартную отправку формы
+
+            var form = event.target;
+            var formData = new FormData(form);
+
+            // Отправляем данные через fetch с методом PUT
+            fetch(form.action, {
+                method: 'PUT',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data) {
+                        alert("Post updated successfully!");
+                        window.location.href = "/posts/";  // Перенаправление на список постов
+                    } else {
+                        alert("Error updating post.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Error updating post.");
+                });
+        }
+    </script>
+
+    <a href="/posts/">Back to Posts List</a>
+</body>
+
+</html>
